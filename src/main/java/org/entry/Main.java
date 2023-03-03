@@ -72,5 +72,8 @@ public class Main {
                 }
             }
         }
+        else {
+            Server server = new Server(console, "C:\\Games\\RimWorld\\goggame-1094900565.ico", 2);
+        }
     }
 }

@@ -132,28 +132,28 @@ class DatagramConnection extends Thread {
     @Override
     public void run() {
         super.run();
-        byte[] buf;
+        byte[] buf = new byte[bufferLength];;
         try (InputStream inputStream = new FileInputStream(file)) {
             BufferedInputStream in = new BufferedInputStream(inputStream);
 
             System.out.println("The System " + address + " is downloading the file");
 
-            buf = file.getName().getBytes(StandardCharsets.UTF_8);
-            byte[] len = ByteBuffer.allocate(4).putInt(buf.length).array();
+            byte[] byteLen = file.getName().getBytes(StandardCharsets.UTF_8);
+            byte[] len = ByteBuffer.allocate(4).putInt(byteLen.length).array();
             DatagramPacket packet = new DatagramPacket(len, len.length, address, port);
             socket.send(packet);
-            packet = new DatagramPacket(buf, buf.length, address, port);
+            packet.setData(byteLen);
             socket.send(packet);
 
-            buf = new byte[bufferLength];
+            packet.setData(buf);
             int get;
             while ((get = in.read(buf)) > 0) {
-                socket.send(new DatagramPacket(buf, get, address, port));
+                packet.setLength(get);
+                socket.send(packet);
             }
-            //sleep(100);
-            buf = new byte[1];
+            packet.setLength(1);
             for(int i = 0; i < 10;i++){
-                socket.send(new DatagramPacket(buf,1, address, port));
+                socket.send(packet);
             }
             System.out.println("Sent file to " + address);
             in.close();
