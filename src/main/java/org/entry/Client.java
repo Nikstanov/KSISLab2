@@ -3,6 +3,7 @@ package org.entry;
 import java.io.*;
 import java.net.*;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 public class Client {
@@ -19,7 +20,7 @@ public class Client {
                 BufferedInputStream in = new BufferedInputStream(inputStream);
                 int nameSize = in.read();
                 in.read(buf,0,nameSize);
-                String string = new String(Arrays.copyOf(buf,nameSize));
+                String string = new String(Arrays.copyOf(buf,nameSize), StandardCharsets.UTF_8);
                 File file = new File(dirAddr + string);
                 System.out.println("File download start " + string);
                 try(FileOutputStream fileOutputStream = new FileOutputStream(file,false)){
